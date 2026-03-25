@@ -7,7 +7,6 @@ import { logger } from '../../utils/logger.js';
 export class SQLiteAdapter implements DatabaseAdapter {
   readonly type = 'sqlite';
   private db: Database.Database | null = null;
-  private config: ConnectionConfig | null = null;
   private readOnlyMode = false;
 
   async connect(config: ConnectionConfig): Promise<void> {
@@ -18,7 +17,6 @@ export class SQLiteAdapter implements DatabaseAdapter {
         throw new ConnectionError('SQLite path is required');
       }
 
-      this.config = config;
       this.readOnlyMode = config.readOnly ?? false;
 
       this.db = new Database(config.path, {
@@ -46,7 +44,6 @@ export class SQLiteAdapter implements DatabaseAdapter {
     if (this.db) {
       this.db.close();
       this.db = null;
-      this.config = null;
       logger.info('SQLite connection closed');
     }
   }

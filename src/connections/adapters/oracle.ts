@@ -3,14 +3,10 @@ import type { ConnectionConfig, QueryResult, SchemaInfo, ExecuteOptions, ColumnI
 import { ConnectionError, QueryError, TimeoutError } from '../../utils/errors.js';
 import { logger } from '../../utils/logger.js';
 
-type OracleDB = any;
-
 export class OracleAdapter implements DatabaseAdapter {
   readonly type = 'oracle';
   private oracledb: any = null;
   private connection: any = null;
-  private config: ConnectionConfig | null = null;
-  private readOnlyMode = false;
 
   async connect(config: ConnectionConfig): Promise<void> {
     try {
@@ -23,9 +19,6 @@ export class OracleAdapter implements DatabaseAdapter {
           throw new ConnectionError('oracledb module not available. Install it with: npm install oracledb');
         }
       }
-
-      this.config = config;
-      this.readOnlyMode = config.readOnly ?? false;
 
       const connectString = `${config.host}:${config.port || 1521}/${config.database}`;
 
@@ -47,7 +40,6 @@ export class OracleAdapter implements DatabaseAdapter {
     if (this.connection) {
       await this.connection.close();
       this.connection = null;
-      this.config = null;
       logger.info('Oracle connection closed');
     }
   }
@@ -216,8 +208,8 @@ export class OracleAdapter implements DatabaseAdapter {
     };
   }
 
-  async setReadOnly(readOnly: boolean): Promise<void> {
-    this.readOnlyMode = readOnly;
+  async setReadOnly(_readOnly: boolean): Promise<void> {
+    // Oracle read-only mode not implemented
   }
 
   private mapOracleType(dbType: any): string {

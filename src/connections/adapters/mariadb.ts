@@ -17,7 +17,7 @@ export class MariaDBAdapter implements DatabaseAdapter {
       this.config = config;
       this.readOnlyMode = config.readOnly ?? false;
 
-      const poolConfig: mariadb.PoolConfig = {
+      const poolConfig: any = {
         host: config.host,
         port: config.port || 3306,
         database: config.database,

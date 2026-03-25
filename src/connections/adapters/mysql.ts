@@ -73,8 +73,8 @@ export class MySQLAdapter implements DatabaseAdapter {
     const connection = await this.pool.getConnection();
 
     try {
-      if (options.timeout) {
-        await connection.query(`SET SESSION max_execution_time = ${options.timeout}`);
+      if (options.timeout && options.timeout > 0) {
+        await connection.query(`SET SESSION max_execution_time = ${Math.floor(options.timeout)}`);
       }
 
       const [rows, fields] = await connection.query(sql, params);
@@ -82,8 +82,8 @@ export class MySQLAdapter implements DatabaseAdapter {
 
       const columns: ColumnInfo[] = (fields as mysql.FieldPacket[]).map(field => ({
         name: field.name,
-        type: this.mapMySQLType(field.type),
-        nullable: (field.flags & 1) === 0,
+        type: this.mapMySQLType(field.type ?? 0),
+        nullable: (Number(field.flags ?? 0) & 1) === 0,
       }));
 
       const maxRows = options.maxRows || 100000;

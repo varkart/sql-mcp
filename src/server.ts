@@ -1,16 +1,11 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { ConnectionManager } from './connections/manager.js';
-import { loadConfig } from './connections/config.js';
 import { loadConnections } from './connections/persistence.js';
-import { validateQuery, classifyStatement, isDestructive } from './security/query-validator.js';
+import { validateQuery, classifyStatement } from './security/query-validator.js';
 import { buildExecuteOptions } from './security/sandbox.js';
 import { renderTable } from './visualization/ascii-table.js';
-import { renderBarChart } from './visualization/ascii-chart.js';
 import { generateSql } from './sampling/nl-to-sql.js';
-import { planCrossDbQuery } from './cross-db/planner.js';
-import { executeSubQueries } from './cross-db/executor.js';
-import { mergeResults } from './cross-db/merger.js';
 import { logger } from './utils/logger.js';
 import type { ServerConfig, QueryHistoryEntry } from './utils/types.js';
 
@@ -341,6 +336,7 @@ export async function createServer() {
   );
 
   server.resource(
+    'connections-list',
     'sql://connections',
     async () => ({
       contents: [{
@@ -348,11 +344,11 @@ export async function createServer() {
         mimeType: 'application/json',
         text: JSON.stringify(manager.listConnections(), null, 2),
       }],
-    }),
-    { description: 'List of all database connections' }
+    })
   );
 
   server.resource(
+    'query-history',
     'sql://history',
     async () => ({
       contents: [{
@@ -360,27 +356,40 @@ export async function createServer() {
         mimeType: 'application/json',
         text: JSON.stringify(queryHistory.slice(0, MAX_HISTORY), null, 2),
       }],
-    }),
-    { description: 'Query execution history' }
+    })
   );
 
   server.prompt(
     'explore-database',
-    async (args) => {
-      const connectionId = (args as any).connectionId;
-      const schema = await manager.getSchema(connectionId);
+    'Explore a database schema',
+    async (_extra) => {
+      const connections = manager.listConnections();
+      const firstConnected = connections.find(c => c.status === 'connected');
+
+      if (!firstConnected) {
+        return {
+          messages: [{
+            role: 'user',
+            content: {
+              type: 'text',
+              text: 'No connected databases found. Please connect to a database first.',
+            },
+          }],
+        };
+      }
+
+      const schema = await manager.getSchema(firstConnected.id);
 
       return {
         messages: [{
           role: 'user',
           content: {
             type: 'text',
-            text: `Explore the ${schema.databaseType} database '${connectionId}' with ${schema.tables.length} tables. Describe the structure, show row counts, sample data, and suggest useful queries.`,
+            text: `Explore the ${schema.databaseType} database '${firstConnected.id}' with ${schema.tables.length} tables. Describe the structure, show row counts, sample data, and suggest useful queries.`,
           },
         }],
       };
-    },
-    { description: 'Explore a database schema' }
+    }
   );
 
   return { server, manager };

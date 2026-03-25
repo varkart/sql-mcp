@@ -1,5 +1,5 @@
 import type { DatabaseAdapter } from './adapters/base.js';
-import type { ConnectionConfig, ActiveConnection, ConnectionEntry } from '../utils/types.js';
+import type { ConnectionConfig, ActiveConnection } from '../utils/types.js';
 import { PostgreSQLAdapter } from './adapters/postgresql.js';
 import { MySQLAdapter } from './adapters/mysql.js';
 import { SQLiteAdapter } from './adapters/sqlite.js';

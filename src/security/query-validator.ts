@@ -58,7 +58,6 @@ function hasMultipleStatements(sql: string): boolean {
 
   for (let i = 0; i < sql.length; i++) {
     const char = sql[i];
-    const prev = i > 0 ? sql[i - 1] : '';
 
     if (escaped) {
       escaped = false;

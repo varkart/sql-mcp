@@ -1,4 +1,4 @@
-export function supportsHtmlApps(clientCapabilities?: any): boolean {
+export function supportsHtmlApps(_clientCapabilities?: any): boolean {
   return false;
 }
 

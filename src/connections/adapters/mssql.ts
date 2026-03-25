@@ -7,14 +7,12 @@ import { logger } from '../../utils/logger.js';
 export class MSSQLAdapter implements DatabaseAdapter {
   readonly type = 'mssql';
   private pool: mssql.ConnectionPool | null = null;
-  private config: ConnectionConfig | null = null;
   private readOnlyMode = false;
 
   async connect(config: ConnectionConfig): Promise<void> {
     try {
       logger.debug('Connecting to MSSQL', { host: config.host, database: config.database });
 
-      this.config = config;
       this.readOnlyMode = config.readOnly ?? false;
 
       const poolConfig: mssql.config = {
@@ -53,7 +51,6 @@ export class MSSQLAdapter implements DatabaseAdapter {
     if (this.pool) {
       await this.pool.close();
       this.pool = null;
-      this.config = null;
       logger.info('MSSQL connection closed');
     }
   }
@@ -71,10 +68,6 @@ export class MSSQLAdapter implements DatabaseAdapter {
 
     try {
       const request = this.pool.request();
-
-      if (options.timeout) {
-        request.timeout = options.timeout;
-      }
 
       params.forEach((param, index) => {
         request.input(`param${index}`, param);
