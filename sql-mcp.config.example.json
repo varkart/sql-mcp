@@ -1,0 +1,44 @@
+{
+  "defaults": {
+    "readOnly": true,
+    "queryTimeout": 30000,
+    "maxRows": 1000
+  },
+  "connections": {
+    "local-postgres": {
+      "name": "Local PostgreSQL",
+      "env": "development",
+      "config": {
+        "type": "postgresql",
+        "host": "localhost",
+        "port": 5432,
+        "database": "mydb",
+        "user": "postgres",
+        "password": "${POSTGRES_PASSWORD}",
+        "readOnly": true
+      }
+    },
+    "local-mysql": {
+      "name": "Local MySQL",
+      "env": "development",
+      "config": {
+        "type": "mysql",
+        "host": "localhost",
+        "port": 3306,
+        "database": "mydb",
+        "user": "root",
+        "password": "${MYSQL_PASSWORD}",
+        "readOnly": true
+      }
+    },
+    "local-sqlite": {
+      "name": "Local SQLite",
+      "env": "development",
+      "config": {
+        "type": "sqlite",
+        "path": "./data/mydb.sqlite",
+        "readOnly": true
+      }
+    }
+  }
+}
