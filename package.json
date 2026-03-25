@@ -13,7 +13,9 @@
     "build:all": "npm run build && npm run build:ui",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
-    "test": "NODE_OPTIONS='--loader ts-node/esm --experimental-specifier-resolution=node' mocha 'test/**/*.test.ts'",
+    "test": "npm run build && mocha --require test/setup.js 'test/**/*.test.js'",
+    "test:integration": "npm run build && mocha --require test/setup.js 'test/integration/**/*.test.js' --timeout 60000",
+    "test:unit": "npm run build && mocha --require test/setup.js 'test/unit/**/*.test.js'",
     "test:watch": "npm test -- --watch",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write 'src/**/*.ts'",
@@ -63,7 +65,8 @@
     "chai": "^5.1.0",
     "@types/mocha": "^10.0.0",
     "@types/chai": "^5.0.0",
-    "ts-node": "^10.9.0"
+    "ts-node": "^10.9.0",
+    "testcontainers": "^10.16.0"
   },
   "optionalDependencies": {
     "oracledb": "^6.7.0"

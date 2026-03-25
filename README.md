@@ -120,6 +120,40 @@ Connections are persisted to `~/.sql-mcp/connections.json` (mode 0600) for autom
 - Query timeout limits (max 5 minutes)
 - Row limits (max 100,000 rows)
 
+## Testing
+
+The project includes comprehensive unit and integration tests using Testcontainers.
+
+### Prerequisites
+- Docker must be running for integration tests
+- At least 4GB RAM recommended
+
+### Running Tests
+
+```bash
+# All tests
+npm test
+
+# Unit tests only (no Docker required)
+npm run test:unit
+
+# Integration tests (requires Docker)
+npm run test:integration
+
+# Watch mode
+npm run test:watch
+```
+
+### Test Containers
+
+Integration tests automatically spin up:
+- PostgreSQL 16
+- MySQL 8.4
+- MariaDB 11.4
+- MSSQL Server 2022
+
+See [test/README.md](test/README.md) for detailed testing documentation.
+
 ## Development
 
 ```bash

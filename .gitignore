@@ -5,6 +5,9 @@ node_modules/
 # Build outputs
 dist/
 *.tsbuildinfo
+test/**/*.js
+test/**/*.d.ts
+!test/setup.js
 
 # Environment and config
 .env
