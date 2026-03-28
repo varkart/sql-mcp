@@ -80,7 +80,7 @@
     "@types/pg": "^8.11.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "chai": "^5.1.0",
+    "chai": "^6.2.2",
     "esbuild": "^0.24.0",
     "eslint": "^9.0.0",
     "mocha": "^11.0.0",
