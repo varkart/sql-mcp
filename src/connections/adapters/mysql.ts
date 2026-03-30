@@ -80,11 +80,11 @@ export class MySQLAdapter implements DatabaseAdapter {
       const [rows, fields] = await connection.query(sql, params);
       const executionTimeMs = Date.now() - startTime;
 
-      const columns: ColumnInfo[] = (fields as mysql.FieldPacket[]).map(field => ({
+      const columns: ColumnInfo[] = fields ? (fields as mysql.FieldPacket[]).map(field => ({
         name: field.name,
         type: this.mapMySQLType(field.type ?? 0),
         nullable: (Number(field.flags ?? 0) & 1) === 0,
-      }));
+      })) : [];
 
       const maxRows = options.maxRows || 100000;
       const resultRows = Array.isArray(rows) ? rows : [];
